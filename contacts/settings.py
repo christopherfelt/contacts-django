@@ -16,11 +16,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Local
     'users.apps.UsersConfig',
 
     # Third Party
+    'allauth',
+    'allauth.account'
 
 ]
 
@@ -100,3 +103,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+# allauth config
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
