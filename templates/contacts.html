@@ -1,0 +1,46 @@
+{% extends "_base.html" %}
+
+{% block title %}
+Contacts
+{% endblock title %}
+
+{% block content %}
+
+    <header class="container card">
+        <h1>
+            <i class="fa fa-fw fa-address-book"></i>
+            <span>My Contact List</span>
+        </h1>
+          <form action="{% url 'add' %}">
+              <button id="contactToggle" class="fab" title="New Contact" type="submit">
+                <i class="fa fa-lg fa-plus-circle"></i>
+            </button>
+          </form>
+        <hr>
+    </header>
+
+  <main class="container">
+
+
+
+    <div class="contacts" id="contact-list">
+
+        {% for contact in contacts %}
+            <div class="card mt-1 mb-1 {% if contact.emergency %}emergency-contact{% endif %}"> 
+                <h3 class="mt-1 mb-1"><a href="{{ contact.get_absolute_url }}">{{ contact.name }}</a></h3>
+                <div class="d-flex space-between">
+                    <p>
+                    <i class="fa fa-fw fa-phone"></i>
+                    <span>{{ contact.number }}</span>
+                    </p>
+                    <i class="action fa fa-trash text-danger"></i>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+  
