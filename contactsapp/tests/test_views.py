@@ -31,13 +31,13 @@ class TestViews(TestCase):
     def test_homepage_GET(self):
         response = self.client.get(self.homepage_url)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
 
     def test_contact_GET(self):
         response = self.client.get(self.contacts_url)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contacts.html')
 
     def test_detail_GET(self):
@@ -51,7 +51,7 @@ class TestViews(TestCase):
         url = reverse('detail', args=[new_contact.id])
         response = self.client.get(url)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'detail_contact.html')
         self.assertContains(response, "Josh Smith")
         self.assertContains(response, "987654321")
@@ -61,7 +61,7 @@ class TestViews(TestCase):
         url = reverse('add')
         response = self.client.get(url)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create_contact.html')
     
     def test_create_POST(self):
@@ -72,16 +72,17 @@ class TestViews(TestCase):
             'emergency': True
         })
         self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('contacts'))
         self.assertEqual(Contact.objects.all()[1].name, "Jack Smith")
 
     def test_update_GET(self):
         url = reverse('update', args=[self.contact.pk])
         response = self.client.get(url)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'update_contact.html')
     
-    def test_upate_POST(self):
+    def test_update_POST(self):
         url = reverse('update', args=[self.contact.pk])
         response = self.client.post(url, {
             'name': "Jack Smith",
@@ -89,6 +90,20 @@ class TestViews(TestCase):
             'emergency': True
         })
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Contact.objects.all()[0].name, "Jack Smith")
+        self.assertRedirects(response, reverse('contacts'))
+        self.assertEquals(Contact.objects.all()[0].name, "Jack Smith")
 
+    def test_delete_GET(self):
+        url = reverse('delete', args=[self.contact.pk])
+        response = self.client.get(url)
 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'delete_contact.html')
+
+    def test_delete_POST(self):
+        url = reverse('delete', args=[self.contact.pk])
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('contacts'))
+        self.assertEqual(Contact.objects.count(), 0)
